@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <pre>
+        import re
+codemc = []
+
+
+with open('macro.txt', 'r') as file:
+    for i in file:
+        codemc.append(re.split(r' |\n', i)[:3])
+
+for i in codemc:
+    print(i)
+
+
+# PASS 1
+print('\n\nPASS 1 OUTPUT\n\n')
+
+f = 0
+for i in codemc:
+    # print(i[1], 'yooo')
+    if i[1] == 'MACRO':
+        f = 1
+
+    if f == 0:
+        print(i[0], '\t', i[1], '\t', i[2])
+
+    if i[1] == 'MEND':
+        f = 0
+
+MDT = []
+MNT = []
+ALA = []
+dummyarg = []
+
+f = 0
+c = 0
+mdtcnt = 1
+mntcnt = 1
+linemdt = 1
+copycod = codemc
+for i in codemc:
+
+    if c == 1:
+        MNT.append([mntcnt, i[1], mdtcnt])
+        mntcnt += 1
+        c = 0
+    if f == 1:
+
+        if linemdt == 1:
+            MDT.append([mdtcnt, i[0], i[1], i[2]])
+            linemdt = 0
+            # i.split(',')
+            # print('i',i[2].split(','))
+            # i = re.split(',',str(i))
+            # print('split i',i)
+            tempi = []
+            for j in i:
+                # print('j',j)
+                tempi.extend(j.split(','))
+
+            # print('tempi',tempi)
+            for j in tempi:
+                # print('j',j)
+                if re.match(r'^&', j):
+                    ALA.append([str(len(dummyarg)), ''])
+                    dummyarg.append([j, '#'+str(len(dummyarg))])
+
+        else:
+
+            # tempi = []
+            # for j in i:
+            #     # print('j',j)
+            #     tempi.extend(j.split(','))
+            # i = tempi
+            # print('CHECL',i)
+            for a in dummyarg:
+                if i[0] in a[0]:
+
+                    # print('i[0]',i[0])
+                    for j in dummyarg:
+                        if j[0] == i[0]:
+                            i[0] = j[1]
+
+            # print('i[2]',i[2].split(',')[1])
+            for a in dummyarg:
+                if i[2] != '' and i[2].split(',')[1] in a[0]:
+                    # print('i[2]',i[2])
+                    # get index of &
+                    x = i[2].index('&')
+                    for j in dummyarg:
+                        if j[0] == i[2][x:]:
+                            i[2] = i[2][:x] + j[1]
+
+            MDT.append([mdtcnt, i[0], i[1], i[2]])
+
+        mdtcnt += 1
+
+    if i[1] == 'MACRO':
+        f = 1
+        c = 1
+        linemdt = 1
+    if i[1] == 'MEND':
+        f = 0
+        c = 0
+
+
+print('\n\nMDT\n')
+for i in MDT:
+    print(i[0], '\t', i[1], '\t', i[2], '\t', i[3])
+print('\n\nMNT\n')
+for i in MNT:
+    print(i[0], '\t', i[1], '\t', i[2])
+
+# print dummyarg
+print('\n\nDummy Arguments\n')
+for i in dummyarg:
+    print(i[0], '\t', i[1])
+
+print('\n\nALA\n')
+for i in ALA:
+    print(i[0], '\t', i[1])
+
+
+
+    PRG START 0
+ MACRO 
+&LAB INCR &ARG1,&ARG2,&ARG3
+&LAB A 1,&ARG1
+ A 2,&ARG2
+ A 3,&ARG3
+ MEND
+ MACRO
+&LAB INCR2 &ARG1,&ARG2,&ARG3
+&LAB A 1,&ARG1
+ A 2,&ARG2
+ A 3,&ARG3
+ MEND
+LOOP1 INCR DATA1,DATA2,DATA3
+DATA1 DC F'5'
+DATA2 DC F'10'
+DATA3 DC F'15'
+LOOP1 INCR DATA1,DATA2,DATA3
+
+    </pre>
+</body>
+
+</html>

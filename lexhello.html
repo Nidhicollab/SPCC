@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <pre>
+        %{
+            char name[30],choice;
+            %}
+            
+            %%
+            \n { printf("Hello %s, Good afternoon",name); return 1; }
+            %%
+            void main()
+            {
+                printf("Enter your name : ");
+                scanf("%s",name);
+                yylex();
+                printf("\nDo u want to continue ? Press 'y' if yes and 'n' if no\n");
+                scanf("%c",&choice);
+                if(choice == 'y')
+                {
+                    while(choice != 'n')
+                    {
+                        printf("Enter your name : ");
+                        scanf("%s",name);
+                        yylex();
+                        printf("\n\nDo u want to continue ? Press 'y' if yes and 'n' if no : ");
+                        scanf("%c",&choice);
+                    }
+                }
+            }
+            
+    </pre>
+</body>
+
+</html>
